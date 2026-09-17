@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Çınarlı Restoran</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+}
+
+/* HEADER */
+header {
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+  url('https://images.unsplash.com/photo-1555992336-03a23c7b20ee') center/cover;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+header h1 {
+  font-size: 45px;
+  color: orange;
+}
+
+header p {
+  font-size: 18px;
+}
+
+/* SECTIONS */
+.section {
+  padding: 30px;
+}
+
+h2 {
+  color: orange;
+  border-bottom: 2px solid orange;
+  padding-bottom: 10px;
+}
+
+/* MENU */
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  background: #1c1c1c;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.menu-item:hover {
+  background: orange;
+  color: black;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #000;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Çınarlı Restoran</h1>
+  <p>Ən dadlı milli və dünya mətbəxi 🍽️</p>
+</header>
+
+<div class="section">
+  <h2>🍢 Kabablar</h2>
+  <div class="menu-item"><span>Lülə kabab</span><span>9 AZN</span></div>
+  <div class="menu-item"><span>Tikə kabab</span><span>10 AZN</span></div>
+  <div class="menu-item"><span>Qarışıq kabab</span><span>11 AZN</span></div>
+</div>
+
+<div class="section">
+  <h2>🥘 Əsas yeməklər</h2>
+  <div class="menu-item"><span>Plov</span><span>8 AZN</span></div>
+  <div class="menu-item"><span>Dolma</span><span>7 AZN</span></div>
+  <div class="menu-item"><span>Bozbaş</span><span>9 AZN</span></div>
+</div>
+
+<div class="section">
+  <h2>🥗 Salatlar</h2>
+  <div class="menu-item"><span>Sezar salatı</span><span>10 AZN</span></div>
+  <div class="menu-item"><span>Çoban salatı</span><span>5 AZN</span></div>
+</div>
+
+<div class="section">
+  <h2>🥤 İçkilər</h2>
+  <div class="menu-item"><span>Kola</span><span>3 AZN</span></div>
+  <div class="menu-item"><span>Ayran</span><span>2 AZN</span></div>
+</div>
+
+<footer>
+  <p>📞 050 123 45 67</p>
+  <p>📍 Bakı, Azərbaycan</p>
+</footer>
+
+</body>
+</html>

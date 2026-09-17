@@ -1,0 +1,929 @@
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Tövsiyə Sistemi Ultra</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        radial-gradient(circle at top left, rgba(255,77,109,0.35), transparent 30%),
+        radial-gradient(circle at top right, rgba(108,92,231,0.30), transparent 30%),
+        linear-gradient(135deg, #f6f1f3, #dff1ff);
+      transition: 0.4s;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    body.dark {
+      background:
+        radial-gradient(circle at top left, rgba(255,77,109,0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(108,92,231,0.18), transparent 30%),
+        linear-gradient(135deg, #0f1020, #1e2235);
+      color: white;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 950px;
+      border-radius: 28px;
+      padding: 24px;
+      background: rgba(255,255,255,0.20);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      animation: fadeIn 0.7s ease;
+    }
+
+    body.dark .app {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 8px;
+      text-shadow: 0 0 12px rgba(255,77,109,0.35);
+    }
+
+    .subtitle {
+      text-align: center;
+      opacity: 0.85;
+      margin-bottom: 18px;
+    }
+
+    .hidden { display: none; }
+
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 18px 0 26px;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff4d6d, #6c5ce7, #00c2ff);
+      box-shadow: 0 0 15px rgba(108,92,231,0.6);
+      transition: 0.4s;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 780px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: none;
+      outline: none;
+      margin-top: 12px;
+      font-size: 15px;
+    }
+
+    input, select, textarea {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    body.dark input,
+    body.dark select,
+    body.dark textarea {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    button {
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(90deg, #ff4d6d, #6c5ce7);
+      transition: 0.25s;
+      box-shadow: 0 10px 22px rgba(108,92,231,0.25);
+    }
+
+    button:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 14px 28px rgba(108,92,231,0.35);
+    }
+
+    .secondary {
+      background: linear-gradient(90deg, #00b894, #00cec9);
+    }
+
+    .ghost {
+      background: rgba(255,255,255,0.18);
+      color: inherit;
+      border: 1px solid rgba(255,255,255,0.22);
+      box-shadow: none;
+    }
+
+    .card-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 560px) {
+      .card-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .option-card {
+      padding: 20px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.48);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: 0.25s;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.07);
+    }
+
+    .option-card:hover {
+      transform: translateY(-4px);
+      border-color: #ff4d6d;
+      box-shadow: 0 0 18px rgba(255,77,109,0.22);
+    }
+
+    .option-card.selected {
+      border-color: #6c5ce7;
+      box-shadow: 0 0 20px rgba(108,92,231,0.28);
+      background: rgba(255,255,255,0.72);
+    }
+
+    body.dark .option-card {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 760px) {
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .slider-wrap {
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.45s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      padding: 6px;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      background: rgba(255,255,255,0.40);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 30px rgba(0,0,0,0.08);
+      animation: slideUp 0.45s ease;
+    }
+
+    @media (max-width: 760px) {
+      .result-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    body.dark .result-card {
+      background: rgba(255,255,255,0.07);
+    }
+
+    .cover {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 18px;
+      box-shadow: 0 12px 22px rgba(0,0,0,0.18);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      background: linear-gradient(90deg, #ffd166, #ff9f43);
+      color: #222;
+    }
+
+    .match {
+      font-size: 15px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .reason-box {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.45);
+      line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    body.dark .reason-box {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .stars {
+      font-size: 26px;
+      letter-spacing: 2px;
+      user-select: none;
+      margin: 10px 0 4px;
+    }
+
+    .star {
+      cursor: pointer;
+      transition: 0.2s;
+      filter: grayscale(1);
+      opacity: 0.7;
+    }
+
+    .star.active {
+      filter: grayscale(0);
+      opacity: 1;
+      transform: scale(1.06);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .panel {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.30);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    body.dark .panel {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .favorites-list p,
+    .reviews-list p {
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.35);
+    }
+
+    body.dark .favorites-list p,
+    body.dark .reviews-list p {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .small {
+      font-size: 13px;
+      opacity: 0.82;
+    }
+
+    .section-title {
+      margin-bottom: 10px;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 14px;
+      top: -20px;
+      opacity: 0.9;
+      animation: fall linear forwards;
+      z-index: 9999;
+      border-radius: 3px;
+    }
+
+    .empty {
+      opacity: 0.75;
+      font-style: italic;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1 class="title">✨ Smart Tövsiyə Sistemi Ultra</h1>
+    <p class="subtitle">Film + kitab tövsiyələri, rating, favorit, filtr, rəy, animasiya və daha çox</p>
+
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+
+    <div id="step1">
+      <h2>Xoş gəlmisən 👋</h2>
+      <p class="small">Sistem sənin seçiminə uyğun fərdi tövsiyə hazırlayacaq.</p>
+      <input id="username" type="text" placeholder="Adını yaz..." />
+      <button onclick="nextStep(2)">Davam et</button>
+    </div>
+
+    <div id="step2" class="hidden">
+      <h2>Yaş qrupunu seç</h2>
+      <div class="card-options">
+        <div class="option-card" onclick="selectAge('13to17', this)">13–17</div>
+        <div class="option-card" onclick="selectAge('18plus', this)">18+</div>
+      </div>
+      <div class="nav-row">
+        <button class="ghost" onclick="nextStep(1)">Geri</button>
+        <button onclick="nextStep(3)">Növbəti</button>
+      </div>
+    </div>
+
+    <div id="step3" class="hidden">
+      <h2>Janr seç 🎭</h2>
+      <div class="card-options">
+        <div class="option-card" onclick="selectGenre('romantic', this)">❤️ Romantik</div>
+        <div class="option-card" onclick="selectGenre('action', this)">🔥 Aksiya</div>
+        <div class="option-card" onclick="selectGenre('comedy', this)">😂 Komediya</div>
+        <div class="option-card" onclick="selectGenre('drama', this)">🎬 Dram</div>
+      </div>
+      <div class="nav-row">
+        <button class="ghost" onclick="nextStep(2)">Geri</button>
+        <button onclick="nextStep(4)">Nəticəyə keç</button>
+      </div>
+    </div>
+
+    <div id="step4" class="hidden">
+      <div class="grid-2">
+        <div>
+          <h2 id="welcomeText">Sənin üçün tövsiyələr ✨</h2>
+          <p class="small">Axtar, filtr et, rating ver, favoritə at və rəy yaz.</p>
+        </div>
+        <div class="action-row" style="justify-content:flex-end;">
+          <button class="ghost" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+          <button class="secondary" onclick="showRecommendations(true)">🎉 Yeni seçim</button>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="text" placeholder="Axtar: kitab və ya film adı..." oninput="renderSlides()"/>
+        <select id="typeFilter" onchange="renderSlides()">
+          <option value="all">Hamısı</option>
+          <option value="book">Yalnız kitab</option>
+          <option value="movie">Yalnız film</option>
+        </select>
+        <select id="sortFilter" onchange="renderSlides()">
+          <option value="default">Standart</option>
+          <option value="ratingHigh">Rating yüksək</option>
+          <option value="ratingLow">Rating aşağı</option>
+          <option value="matchHigh">Uyğunluq yüksək</option>
+        </select>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slides" id="slides"></div>
+      </div>
+
+      <div class="nav-row">
+        <button class="ghost" onclick="prevSlide()">⬅ Əvvəlki</button>
+        <button onclick="nextSlide()">Sonrakı ➡</button>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">💖 Favoritlərin</h3>
+        <div class="favorites-list" id="favoritesList"></div>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">📝 Rəylər</h3>
+        <select id="reviewTarget"></select>
+        <textarea id="reviewText" placeholder="Tövsiyə haqqında fikrini yaz..."></textarea>
+        <button onclick="saveReview()">Rəyi yadda saxla</button>
+        <div class="reviews-list" id="reviewsList" style="margin-top:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedAge = "";
+    let selectedGenre = "";
+    let currentSlide = 0;
+    let recommendations = [];
+
+    const data = {
+      "13to17": {
+        romantic: {
+          books: [
+            { title: "Love & Gelato", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "Eleanor & Park", img: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=600&q=80" },
+            { title: "Better Than the Movies", img: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80" },
+            { title: "To All the Boys I've Loved Before", img: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Flipped", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" },
+            { title: "Love, Simon", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "To All the Boys I've Loved Before", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Fault in Our Stars", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        action: {
+          books: [
+            { title: "The Hunger Games", img: "https://images.unsplash.com/photo-1511108690759-009324a90311?auto=format&fit=crop&w=600&q=80" },
+            { title: "Percy Jackson", img: "https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=600&q=80" },
+            { title: "Maze Runner", img: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=600&q=80" },
+            { title: "Divergent", img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Spider-Man", img: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80" },
+            { title: "Harry Potter", img: "https://images.unsplash.com/photo-1608889175123-8ee362201f81?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Hunger Games", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Maze Runner", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        comedy: {
+          books: [
+            { title: "Diary of a Wimpy Kid", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "Dork Diaries", img: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=600&q=80" },
+            { title: "Big Nate", img: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?auto=format&fit=crop&w=600&q=80" },
+            { title: "Timmy Failure", img: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Home Alone", img: "https://images.unsplash.com/photo-1585951237318-9ea5e175b891?auto=format&fit=crop&w=600&q=80" },
+            { title: "Jumanji", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "Night at the Museum", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" },
+            { title: "Mean Girls", img: "https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        drama: {
+          books: [
+            { title: "Wonder", img: "https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Book Thief", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "A Monster Calls", img: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=600&q=80" },
+            { title: "Bridge to Terabithia", img: "https://images.unsplash.com/photo-1474932430478-367dbb6832c1?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Wonder", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "Bridge to Terabithia", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Pursuit of Happyness", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80" },
+            { title: "A Monster Calls", img: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=600&q=80" }
+          ]
+        }
+      },
+      "18plus": {
+        romantic: {
+          books: [
+            { title: "Pride and Prejudice", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Notebook", img: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=600&q=80" },
+            { title: "Normal People", img: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80" },
+            { title: "Me Before You", img: "https://images.unsplash.com/photo-1473755504818-b72b6dfdc226?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Titanic", img: "https://images.unsplash.com/photo-1502139214982-d0ad755818d8?auto=format&fit=crop&w=600&q=80" },
+            { title: "La La Land", img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80" },
+            { title: "Before Sunrise", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Notebook", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        action: {
+          books: [
+            { title: "The Bourne Identity", img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80" },
+            { title: "Casino Royale", img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80" },
+            { title: "Jack Reacher", img: "https://images.unsplash.com/photo-1511108690759-009324a90311?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Da Vinci Code", img: "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Inception", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "John Wick", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80" },
+            { title: "Gladiator", img: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Dark Knight", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        comedy: {
+          books: [
+            { title: "Good Omens", img: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=600&q=80" },
+            { title: "Catch-22", img: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Hitchhiker’s Guide", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "Bossypants", img: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "The Hangover", img: "https://images.unsplash.com/photo-1585951237318-9ea5e175b891?auto=format&fit=crop&w=600&q=80" },
+            { title: "Superbad", img: "https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80" },
+            { title: "21 Jump Street", img: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=600&q=80" },
+            { title: "Deadpool", img: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80" }
+          ]
+        },
+        drama: {
+          books: [
+            { title: "1984", img: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Kite Runner", img: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Great Gatsby", img: "https://images.unsplash.com/photo-1455885666463-9b5687f06c8b?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Nightingale", img: "https://images.unsplash.com/photo-1473755504818-b72b6dfdc226?auto=format&fit=crop&w=600&q=80" }
+          ],
+          movies: [
+            { title: "Forrest Gump", img: "https://images.unsplash.com/photo-1502139214982-d0ad755818d8?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Green Mile", img: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=600&q=80" },
+            { title: "The Shawshank Redemption", img: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=600&q=80" },
+            { title: "Joker", img: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80" }
+          ]
+        }
+      }
+    };
+
+    function nextStep(step) {
+      if (step === 2) {
+        const username = document.getElementById("username").value.trim();
+        if (!username) {
+          alert("Adını yaz 😊");
+          return;
+        }
+      }
+      if (step === 3 && !selectedAge) {
+        alert("Yaş qrupunu seç 😊");
+        return;
+      }
+      if (step === 4) {
+        if (!selectedGenre) {
+          alert("Janr seç 😊");
+          return;
+        }
+        showRecommendations(false);
+      }
+
+      document.querySelectorAll('[id^="step"]').forEach(el => el.classList.add("hidden"));
+      document.getElementById("step" + step).classList.remove("hidden");
+
+      const widths = {1: 0, 2: 33, 3: 66, 4: 100};
+      document.getElementById("progress").style.width = widths[step] + "%";
+    }
+
+    function clearSelection(selector) {
+      document.querySelectorAll(selector).forEach(card => card.classList.remove("selected"));
+    }
+
+    function selectAge(age, el) {
+      selectedAge = age;
+      clearSelection("#step2 .option-card");
+      el.classList.add("selected");
+    }
+
+    function selectGenre(genre, el) {
+      selectedGenre = genre;
+      clearSelection("#step3 .option-card");
+      el.classList.add("selected");
+    }
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function getReason(type, genre, age) {
+      const reasons = {
+        romantic: "çünki seçdiyin janr emosional, münasibət mərkəzli və yaddaqalan hekayələri önə çıxarır",
+        action: "çünki temp, gərginlik və macəra sevən istifadəçilər üçün daha dinamik seçimlər daha uyğun olur",
+        comedy: "çünki yüngül, əyləncəli və rahat izlənən/oxunan kontent istəmisən",
+        drama: "çünki daha dərin, təsirli və hiss yüklü hekayələr seçmisən"
+      };
+      return `${type === 'book' ? 'Bu kitab' : 'Bu film'} sənə ${reasons[genre]} və ${age === '13to17' ? 'yeniyetmə auditoriyaya uyğun seçimlər arasından' : 'daha geniş böyüklər auditoriyasına uyğun seçimlər arasından'} seçildi.`;
+    }
+
+    function generateMatch() {
+      return Math.floor(Math.random() * 16) + 85;
+    }
+
+    function getStoredRating(title) {
+      return Number(localStorage.getItem("rating_" + title)) || 0;
+    }
+
+    function showRecommendations(withConfetti) {
+      const username = document.getElementById("username").value.trim();
+      document.getElementById("welcomeText").innerText = `${username}, sənin üçün seçdiklərimiz ✨`;
+
+      const selected = data[selectedAge][selectedGenre];
+      const books = shuffle(selected.books).slice(0, 3).map(item => ({
+        ...item,
+        type: "book",
+        match: generateMatch()
+      }));
+      const movies = shuffle(selected.movies).slice(0, 3).map(item => ({
+        ...item,
+        type: "movie",
+        match: generateMatch()
+      }));
+
+      recommendations = shuffle([...books, ...movies]);
+      currentSlide = 0;
+      updateReviewTarget();
+      renderSlides();
+      loadFavorites();
+      loadReviews();
+
+      if (withConfetti) createConfetti();
+    }
+
+    function renderSlides() {
+      const search = document.getElementById("searchInput").value.toLowerCase().trim();
+      const typeFilter = document.getElementById("typeFilter").value;
+      const sortFilter = document.getElementById("sortFilter").value;
+
+      let filtered = recommendations.filter(item => {
+        const okSearch = item.title.toLowerCase().includes(search);
+        const okType = typeFilter === "all" || item.type === typeFilter;
+        return okSearch && okType;
+      });
+
+      if (sortFilter === "ratingHigh") {
+        filtered.sort((a, b) => getStoredRating(b.title) - getStoredRating(a.title));
+      } else if (sortFilter === "ratingLow") {
+        filtered.sort((a, b) => getStoredRating(a.title) - getStoredRating(b.title));
+      } else if (sortFilter === "matchHigh") {
+        filtered.sort((a, b) => b.match - a.match);
+      }
+
+      const slides = document.getElementById("slides");
+
+      if (filtered.length === 0) {
+        slides.innerHTML = `
+          <div class="slide">
+            <div class="result-card">
+              <div>
+                <img class="cover" src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80" alt="empty">
+              </div>
+              <div>
+                <h3>Nəticə tapılmadı</h3>
+                <p class="empty">Axtarış və ya filtrə uyğun tövsiyə yoxdur. Filtri dəyiş.</p>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (currentSlide >= filtered.length) currentSlide = 0;
+
+      slides.innerHTML = filtered.map(item => {
+        const rating = getStoredRating(item.title);
+        return `
+          <div class="slide">
+            <div class="result-card">
+              <div>
+                <img class="cover" src="${item.img}" alt="${item.title}">
+              </div>
+              <div>
+                <h2>${item.type === 'book' ? '📚' : '🎬'} ${item.title}</h2>
+
+                <div class="badge-row">
+                  <span class="badge">${item.type === 'book' ? 'Kitab' : 'Film'}</span>
+                  <span class="badge">${selectedGenreLabel()}</span>
+                  <span class="badge">${selectedAge === '13to17' ? '13–17' : '18+'}</span>
+                </div>
+
+                <div class="match">Uyğunluq faizi: ${item.match}%</div>
+
+                <div class="reason-box">
+                  <strong>Niyə bunu tövsiyə etdik?</strong><br>
+                  ${getReason(item.type, selectedGenre, selectedAge)}
+                </div>
+
+                <div class="stars" id="stars-${escapeId(item.title)}">
+                  ${[1,2,3,4,5].map(n => `
+                    <span class="star ${n <= rating ? 'active' : ''}" onclick="rateItem('${item.title.replace(/'/g,"\\'")}', ${n})">⭐</span>
+                  `).join("")}
+                </div>
+                <div class="small">Sənin verdiyin rating: ${rating || 0}/5</div>
+
+                <div class="action-row">
+                  <button onclick="addFavorite('${item.title.replace(/'/g,"\\'")}')">💖 Favoritə əlavə et</button>
+                  <button class="secondary" onclick="prefillReview('${item.title.replace(/'/g,"\\'")}')">📝 Rəy yaz</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      slides.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function selectedGenreLabel() {
+      const map = {
+        romantic: "Romantik",
+        action: "Aksiya",
+        comedy: "Komediya",
+        drama: "Dram"
+      };
+      return map[selectedGenre];
+    }
+
+    function nextSlide() {
+      const count = document.querySelectorAll(".slide").length;
+      if (!count) return;
+      currentSlide = (currentSlide + 1) % count;
+      document.getElementById("slides").style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function prevSlide() {
+      const count = document.querySelectorAll(".slide").length;
+      if (!count) return;
+      currentSlide = (currentSlide - 1 + count) % count;
+      document.getElementById("slides").style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function rateItem(title, rating) {
+      localStorage.setItem("rating_" + title, rating);
+      renderSlides();
+    }
+
+    function addFavorite(item) {
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      if (!favorites.includes(item)) {
+        favorites.push(item);
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        createConfetti(18);
+      }
+      loadFavorites();
+    }
+
+    function loadFavorites() {
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      const box = document.getElementById("favoritesList");
+
+      if (!favorites.length) {
+        box.innerHTML = `<p class="empty">Hələ favorit yoxdur.</p>`;
+        return;
+      }
+
+      box.innerHTML = favorites.map(item => `
+        <p>
+          ✔ ${item}
+          <button style="width:auto;padding:6px 10px;margin-left:10px;" class="ghost" onclick="removeFavorite('${item.replace(/'/g,"\\'")}')">Sil</button>
+        </p>
+      `).join("");
+    }
+
+    function removeFavorite(item) {
+      let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      favorites = favorites.filter(f => f !== item);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      loadFavorites();
+    }
+
+    function updateReviewTarget() {
+      const target = document.getElementById("reviewTarget");
+      target.innerHTML = recommendations.map(item => `<option value="${item.title}">${item.title}</option>`).join("");
+    }
+
+    function prefillReview(title) {
+      document.getElementById("reviewTarget").value = title;
+      document.getElementById("reviewText").focus();
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    }
+
+    function saveReview() {
+      const target = document.getElementById("reviewTarget").value;
+      const text = document.getElementById("reviewText").value.trim();
+      const username = document.getElementById("username").value.trim();
+
+      if (!text) {
+        alert("Rəy yaz 😊");
+        return;
+      }
+
+      const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+      reviews.push({
+        target,
+        text,
+        user: username || "Anonim"
+      });
+      localStorage.setItem("reviews", JSON.stringify(reviews));
+      document.getElementById("reviewText").value = "";
+      loadReviews();
+    }
+
+    function loadReviews() {
+      const reviews = JSON.parse(localStorage.getItem("reviews")) || [];
+      const box = document.getElementById("reviewsList");
+
+      if (!reviews.length) {
+        box.innerHTML = `<p class="empty">Hələ rəy yoxdur.</p>`;
+        return;
+      }
+
+      box.innerHTML = reviews.slice().reverse().map(r => `
+        <p><strong>${r.user}</strong> → <strong>${r.target}</strong><br>${r.text}</p>
+      `).join("");
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      const mode = document.body.classList.contains("dark") ? "dark" : "light";
+      localStorage.setItem("themeMode", mode);
+    }
+
+    function loadTheme() {
+      const mode = localStorage.getItem("themeMode");
+      if (mode === "dark") document.body.classList.add("dark");
+    }
+
+    function createConfetti(count = 35) {
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = randomConfettiColor();
+        piece.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(piece);
+
+        setTimeout(() => piece.remove(), 4500);
+      }
+    }
+
+    function randomConfettiColor() {
+      const colors = ["#ff4d6d", "#6c5ce7", "#00cec9", "#ffd166", "#00b894", "#74b9ff"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function escapeId(text) {
+      return text.replace(/[^a-zA-Z0-9_-]/g, "");
+    }
+
+    loadTheme();
+    loadFavorites();
+    loadReviews();
+  </script>
+</body>
+</html>

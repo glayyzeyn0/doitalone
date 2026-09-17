@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Paylanmış VBİS - Tam Təqdimat</title>
+    <style>
+        :root { --main-bg: #0f172a; --accent: #38bdf8; --text: #f1f5f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: #334155; margin: 0; padding: 20px; color: var(--text); }
+        .slide { 
+            background: var(--main-bg); width: 900px; height: 550px; 
+            margin: 40px auto; padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        h1 { color: var(--accent); font-size: 42px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        h2 { color: var(--accent); font-size: 32px; }
+        p, li { font-size: 18px; line-height: 1.6; }
+        .sql { background: #1e293b; padding: 15px; border-radius: 8px; border-left: 5px solid var(--accent); font-family: monospace; color: #a5f3fc; }
+        .footer { position: absolute; bottom: 20px; right: 40px; font-size: 12px; color: #64748b; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #334155; padding: 12px; text-align: left; }
+        th { background: var(--accent); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="slide">
+        <h1 style="text-align:center; margin-top:100px;">Paylanmış Verilənlər Bazası İdarəetmə Sistemləri (PVBİS)</h1>
+        <h2 style="text-align:center; color:white;">Arxitektura, Növlər və Praktiki Tətbiq</h2>
+        <p style="text-align:center; margin-top:50px;">Hazırladı: Gemini AI</p>
+        <div class="footer">Slayd 1/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>PVBİS Nədir? (Giriş)</h2>
+        <p>Paylanmış Verilənlər Bazası (PVB) fiziki olaraq müxtəlif qovşaqlarda yerləşən, lakin məntiqi olaraq vahid bir sistem kimi fəaliyyət göstərən bazadır.</p>
+        <ul>
+            <li>Şəbəkə vasitəsilə əlaqə.</li>
+            <li>Lokal muxtariyyət.</li>
+            <li>Mərkəzi olmayan idarəetmə imkanı.</li>
+        </ul>
+        <div class="footer">Slayd 2/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>Praktiki Nümunə: Fraqmentasiya (SQL)</h2>
+        <p>Cədvəli regionlara görə bölmək (Üfüqi fraqmentasiya):</p>
+        <div class="sql">
+            -- Bakı filialı üçün lokal cədvəl yaradılması<br>
+            CREATE TABLE Satislar_Baku AS<br>
+            SELECT * FROM Global_Satislar<br>
+            WHERE region_kodu = 'AZE-10';<br><br>
+            -- Bütün regionları birləşdirib görmək<br>
+            CREATE VIEW Umumi_Baxis AS<br>
+            SELECT * FROM Satislar_Baku<br>
+            UNION ALL<br>
+            SELECT * FROM Satislar_Gence;
+        </div>
+        <div class="footer">Slayd 3/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>PVBİS-in Əsas Növləri</h2>
+        <div class="grid">
+            <div>
+                <h3>1. Homogen (Eynicinsli)</h3>
+                <p>Bütün qovşaqlarda eyni VBİS (məsələn, hamısı Oracle) istifadə olunur. İdarəetmə asandır.</p>
+            </div>
+            <div>
+                <h3>2. Heterogen (Müxtəlifcinsli)</h3>
+                <p>Fərqli qovşaqlarda fərqli sistemlər (Oracle, MySQL, NoSQL) ola bilər. Gateway tələb edir.</p>
+            </div>
+        </div>
+        <div class="footer">Slayd 4/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>CAP Teoremi və Seçimlər</h2>
+        <p>Paylanmış sistemlərdə eyni anda üç xüsusiyyətdən yalnız ikisi mükəmməl ola bilər:</p>
+        <table>
+            <tr><th>Xüsusiyyət</th><th>İzahı</th></tr>
+            <tr><td>Consistency (Uyğunluq)</td><td>Hər kəs eyni anda eyni datanı görür.</td></tr>
+            <tr><td>Availability (Əlçatanlıq)</td><td>Sistem hər zaman sorğulara cavab verir.</td></tr>
+            <tr><td>Partition Tolerance</td><td>Şəbəkə kəsilsə belə sistem işləyir.</td></tr>
+        </table>
+        <div class="footer">Slayd 5/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>Tranzaksiyaların İdarə Edilməsi: 2PC</h2>
+        <p><b>Two-Phase Commit (2-Fazalı Təsdiq):</b></p>
+        <ol>
+            <li><b>Hazırlıq Fazası:</b> Koordinator soruşur: "Hər kəs hazırdırmı?".</li>
+            <li><b>İcra Fazası:</b> Əgər hamı "Hə" desə - Commit, biri "Yox" desə - Rollback.</li>
+        </ol>
+        <p>Bu, paylanmış bazalarda məlumatın dürüstlüyünü təmin edir.</p>
+        <div class="footer">Slayd 6/32</div>
+    </div>
+
+    <div class="slide">
+        <h2>Real İstifadə Sahələri</h2>
+        <ul>
+            <li><b>Bankçılıq:</b> SWIFT köçürmələri və beynəlxalq tranzaksiyalar.</li>
+            <li><b>E-ticarət:</b> Amazon və Trendyolun qlobal anbar bazaları.</li>
+            <li><b>Sosial Şəbəkələr:</b> Facebook və Instagram-ın milyardlarla istifadəçi datasını paylaması.</li>
+            <li><b>Blokçeyn:</b> Tam mərkəzsizləşdirilmiş paylanmış reyestrlər.</li>
+        </ul>
+        <div class="footer">Slayd 7/32</div>
+    </div>
+
+    <div class="slide" style="justify-content:center; text-align:center;">
+        <h1>Təşəkkürlər!</h1>
+        <p>Suallarınız varmı?</p>
+    </div>
+
+</body>
+</html>
